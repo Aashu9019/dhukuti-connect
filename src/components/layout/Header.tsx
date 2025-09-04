@@ -1,40 +1,45 @@
 import { useState } from "react";
-import { Search, ShoppingCart, User, Menu, X, Globe } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Search, ShoppingCart, User, Menu, X, Globe, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useStore } from "@/contexts/StoreContext";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { state } = useStore();
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-soft">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-smooth">
               <Globe className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               DropMart
             </span>
-          </div>
+          </Link>
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium hover:text-primary transition-smooth">
+            <Link to="/categories" className="text-sm font-medium hover:text-primary transition-smooth hover:scale-105">
               Categories
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-smooth">
+            </Link>
+            <Link to="/suppliers" className="text-sm font-medium hover:text-primary transition-smooth hover:scale-105">
               Suppliers
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-smooth">
+            </Link>
+            <Link to="/wholesale" className="text-sm font-medium hover:text-primary transition-smooth hover:scale-105">
               Wholesale
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-smooth">
+            </Link>
+            <Link to="/rfq" className="text-sm font-medium hover:text-primary transition-smooth hover:scale-105">
               RFQ
-            </a>
+            </Link>
           </nav>
         </div>
 
@@ -53,19 +58,34 @@ export const Header = () => {
         <div className="flex items-center gap-4">
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
+            <ThemeToggle />
+            <Button variant="ghost" size="sm" className="hover:scale-105 transition-smooth">
               <User className="w-4 h-4 mr-2" />
               Login
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="hover:scale-105 transition-smooth">
               Sign Up
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="w-5 h-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-secondary text-secondary-foreground text-xs flex items-center justify-center">
-                2
-              </Badge>
-            </Button>
+            <Link to="/wishlist">
+              <Button variant="ghost" size="icon" className="relative hover:scale-110 transition-smooth">
+                <Heart className="w-5 h-5" />
+                {state.wishlistCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-secondary text-secondary-foreground text-xs flex items-center justify-center animate-scale-in">
+                    {state.wishlistCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+            <Link to="/cart">
+              <Button variant="ghost" size="icon" className="relative hover:scale-110 transition-smooth">
+                <ShoppingCart className="w-5 h-5" />
+                {state.cartCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center animate-scale-in">
+                    {state.cartCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,18 +115,18 @@ export const Header = () => {
             
             {/* Mobile Navigation */}
             <nav className="space-y-3">
-              <a href="#" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
+              <Link to="/categories" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
                 Categories
-              </a>
-              <a href="#" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
+              </Link>
+              <Link to="/suppliers" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
                 Suppliers
-              </a>
-              <a href="#" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
+              </Link>
+              <Link to="/wholesale" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
                 Wholesale
-              </a>
-              <a href="#" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
+              </Link>
+              <Link to="/rfq" className="block py-2 text-sm font-medium hover:text-primary transition-smooth">
                 RFQ
-              </a>
+              </Link>
             </nav>
             
             {/* Mobile Actions */}
@@ -117,12 +137,26 @@ export const Header = () => {
               <Button variant="default" size="sm" className="flex-1">
                 Sign Up
               </Button>
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-secondary text-secondary-foreground text-xs flex items-center justify-center">
-                  2
-                </Badge>
-              </Button>
+              <Link to="/wishlist">
+                <Button variant="ghost" size="icon" className="relative">
+                  <Heart className="w-5 h-5" />
+                  {state.wishlistCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-secondary text-secondary-foreground text-xs flex items-center justify-center">
+                      {state.wishlistCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+              <Link to="/cart">
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="w-5 h-5" />
+                  {state.cartCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                      {state.cartCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

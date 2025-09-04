@@ -1,7 +1,10 @@
 import { Star, ShoppingCart, Eye, Heart, MapPin, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useStore } from "@/contexts/StoreContext";
+import { toast } from "sonner";
 
 const featuredProducts = [
   {
@@ -91,6 +94,43 @@ const featuredProducts = [
 ];
 
 const ProductCard = ({ product }: { product: typeof featuredProducts[0] }) => {
+  const { dispatch } = useStore();
+
+  const handleAddToCart = () => {
+    dispatch({
+      type: 'ADD_TO_CART',
+      payload: {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image,
+        quantity: 1,
+        moq: product.moq,
+        supplier: product.supplier,
+      }
+    });
+    toast.success("Added to cart!");
+  };
+
+  const handleAddToWishlist = () => {
+    dispatch({
+      type: 'ADD_TO_WISHLIST',
+      payload: {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image,
+        rating: product.rating,
+        reviews: product.reviews,
+        moq: product.moq,
+        supplier: product.supplier,
+        location: product.location,
+      }
+    });
+    toast.success("Added to wishlist!");
+  };
   return (
     <Card className="group cursor-pointer hover-lift border-0 shadow-soft hover:shadow-medium transition-smooth overflow-hidden bg-gradient-card">
       <div className="relative aspect-square overflow-hidden">
@@ -112,10 +152,12 @@ const ProductCard = ({ product }: { product: typeof featuredProducts[0] }) => {
         
         {/* Quick Actions */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-smooth flex items-center justify-center gap-2">
-          <Button size="icon" variant="secondary" className="rounded-full">
-            <Eye className="w-4 h-4" />
-          </Button>
-          <Button size="icon" variant="secondary" className="rounded-full">
+          <Link to={`/product/${product.id}`}>
+            <Button size="icon" variant="secondary" className="rounded-full hover:scale-110 transition-smooth">
+              <Eye className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Button size="icon" variant="secondary" className="rounded-full hover:scale-110 transition-smooth" onClick={handleAddToWishlist}>
             <Heart className="w-4 h-4" />
           </Button>
         </div>
@@ -168,7 +210,7 @@ const ProductCard = ({ product }: { product: typeof featuredProducts[0] }) => {
           </div>
         </div>
 
-        <Button className="w-full" size="sm">
+        <Button className="w-full hover:scale-105 transition-smooth" size="sm" onClick={handleAddToCart}>
           <ShoppingCart className="w-4 h-4 mr-2" />
           Add to Cart
         </Button>
